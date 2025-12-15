@@ -1,0 +1,16 @@
+{
+  "name": "Rieger´s Gourmet Restaurant",
+  "short_name": "Rieger",
+  "description": "Digitale Reinigungsdokumentation – Küche & Theke",
+  "start_url": "reinigungsplan.html",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#ff0000",
+  "icons": [
+    {
+      "src": "Icon.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}

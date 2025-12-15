@@ -1,0 +1,428 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8" />
+  <title>Rieger´s Gourmet Restaurant – Reinigungsplan</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <style>
+    * { box-sizing: border-box; }
+
+    body{
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      margin:0;
+      padding:0;
+      background:#ffffff;
+      color:#000000;
+    }
+
+    /* Header */
+    .topbar{
+      background:#ffffff;
+      color:#000000;
+      padding:12px 16px;
+      border-bottom:1px solid #ddd;
+      display:flex;
+      align-items:center;
+      gap:12px;
+    }
+    .topbar img{
+      height:42px;
+      object-fit:contain;
+      display:block;
+    }
+    .topbar-title{
+      font-weight:800;
+      text-transform:uppercase;
+      font-size:1rem;
+      line-height:1.1;
+    }
+    .topbar-sub{
+      font-size:0.85rem;
+      color:#1f2937;
+    }
+
+    .container{
+      max-width:1100px;
+      margin:18px auto;
+      padding:0 16px 26px;
+    }
+
+    .subtitle{
+      font-size:0.95rem;
+      color:#1f2937;
+      margin:8px 0 14px;
+    }
+
+    .card{
+      background:#ffffff;
+      border-radius:14px;
+      padding:18px;
+      border:1px solid #ddd;
+      box-shadow:0 2px 8px rgba(0,0,0,0.08);
+      margin-bottom:18px;
+    }
+
+    .card-step{
+      font-size:0.75rem;
+      text-transform:uppercase;
+      letter-spacing:0.08em;
+      color:#1f2937;
+      font-weight:700;
+      margin-bottom:6px;
+    }
+
+    h2{
+      margin:0 0 10px;
+      color:#111827;
+    }
+
+    /* Kategorien als farbige Balken */
+    .category{
+      text-align:center;
+      font-weight:800;
+      padding:10px;
+      border-radius:10px;
+      margin:18px 0 10px;
+      font-size:0.9rem;
+      letter-spacing:0.06em;
+    }
+    .category.daily{
+      background:#dbeafe;
+      color:#1e40af;
+    }
+    .category.weekly{
+      background:#fde68a;
+      color:#92400e;
+    }
+    .category.biweekly{
+      background:#d1d5db;
+      color:#1f2937;
+    }
+
+    /* Buttons */
+    .button-grid{
+      display:grid;
+      grid-template-columns:repeat(auto-fit, minmax(190px, 1fr));
+      gap:10px;
+    }
+
+    .btn{
+      background:#f7f7f7;
+      border:1px solid #cfcfcf;
+      padding:12px 10px;
+      text-align:center;
+      border-radius:12px;
+      font-weight:700;
+      cursor:pointer;
+      color:#000000;
+      font-size:0.95rem;
+      user-select:none;
+    }
+    .btn.selected{
+      background:#e0edff;
+      border-color:#2563eb;
+    }
+
+    /* PIN + Submit */
+    .pin-hint{
+      font-size:0.9rem;
+      color:#1f2937;
+      margin:0 0 10px;
+    }
+
+    .responsibility{
+      margin:8px 0 12px;
+      font-size:0.85rem;
+      color:#1f2937;
+      line-height:1.35;
+    }
+
+    input[type="text"]{
+      width:100%;
+      padding:12px;
+      border-radius:10px;
+      border:1px solid #cfcfcf;
+      margin-bottom:12px;
+      font-size:1rem;
+      outline:none;
+    }
+
+    .submit-btn{
+      width:100%;
+      padding:14px;
+      background:#16a34a;
+      border:none;
+      border-radius:14px;
+      font-size:1.05rem;
+      font-weight:800;
+      color:#ffffff;
+      cursor:pointer;
+    }
+    .submit-btn:active{ transform:scale(0.99); }
+
+    .logout-btn{
+      width:100%;
+      padding:14px;
+      margin-top:10px;
+      background:#dc2626; /* ROT */
+      border:none;
+      border-radius:14px;
+      font-size:1.05rem;
+      font-weight:800;
+      color:#ffffff;
+      cursor:pointer;
+    }
+    .logout-btn:active{ transform:scale(0.99); }
+
+    .status{
+      margin-top:10px;
+      font-size:0.95rem;
+      min-height:1.2em;
+      font-weight:700;
+    }
+    .status.ok{ color:#166534; }
+    .status.error{ color:#b91c1c; }
+
+    /* Tabelle */
+    .table-container{ overflow-x:auto; }
+
+    table{
+      width:100%;
+      border-collapse:collapse;
+      margin-top:12px;
+      font-size:0.9rem;
+    }
+    th, td{
+      padding:8px;
+      border:1px solid #ddd;
+      text-align:left;
+      white-space:nowrap;
+    }
+    th{ background:#f3f4f6; }
+
+    @media (max-width:600px){
+      .button-grid{ grid-template-columns:1fr; }
+      .topbar-title{ font-size:0.95rem; }
+    }
+  </style>
+</head>
+
+<body>
+
+  <div class="topbar">
+    <img src="Moebel_Rieger.png" alt="Möbel Rieger Logo">
+    <div>
+      <div class="topbar-title">Rieger´s Gourmet Restaurant</div>
+      <div class="topbar-sub">Digitale Reinigungsdokumentation – Küche &amp; Theke</div>
+    </div>
+  </div>
+
+  <div class="container">
+
+    <div class="subtitle">
+      Aufgabe wählen → Mitarbeiter wählen → PIN eingeben → bestätigen. Unten siehst du sofort das heutige Protokoll.
+    </div>
+
+    <!-- Schritt 1 -->
+    <div class="card">
+      <div class="card-step">Schritt 1 – Pflicht</div>
+      <h2>Aufgabe wählen</h2>
+
+      <div class="category daily">TÄGLICH</div>
+      <div class="button-grid">
+        <div class="btn task">Theke – Essensausgabe</div>
+        <div class="btn task">Theke – Kuchen / Dessert</div>
+        <div class="btn task">Theke – Salat</div>
+        <div class="btn task">Kaffeemaschine links/rechts</div>
+        <div class="btn task">Getränkeautomat</div>
+      </div>
+
+      <div class="category weekly">WÖCHENTLICH</div>
+      <div class="button-grid">
+        <div class="btn task">Fritteusen links/rechts</div>
+      </div>
+
+      <div class="category biweekly">ALLE 2 WOCHEN</div>
+      <div class="button-grid">
+        <div class="btn task">Küche – Abzugshaube</div>
+        <div class="btn task">Ausgabe – rechts</div>
+        <div class="btn task">Ausgabe – links</div>
+      </div>
+    </div>
+
+    <!-- Schritt 2 -->
+    <div class="card">
+      <div class="card-step">Schritt 2 – Pflicht</div>
+      <h2>Mitarbeiter wählen</h2>
+
+      <div class="button-grid">
+        <div class="btn staff">Herr Müller</div>
+        <div class="btn staff">Frau Kohl</div>
+        <div class="btn staff">Frau Peters</div>
+        <div class="btn staff">Frau Braun</div>
+      </div>
+    </div>
+
+    <!-- Schritt 3 -->
+    <div class="card">
+      <div class="card-step">Schritt 3 – Pflicht</div>
+      <h2>Reinigung bestätigen</h2>
+
+      <p class="pin-hint">PIN eingeben (Mitarbeiter-Code) und dann „Reinigung bestätigen“ klicken.</p>
+
+      <!-- Chef-Version Verantwortungshinweis (ohne Checkbox) -->
+      <p class="responsibility">
+        Mit dem Klick auf „Reinigung bestätigen“ erklärst du verbindlich, dass du die ausgewählte Reinigung selbst und ordnungsgemäß
+        durchgeführt hast. Du bist dafür verantwortlich, deinen persönlichen PIN vor der Nutzung durch Dritte zu schützen.
+      </p>
+
+      <input type="text" id="pin" placeholder="PIN eingeben" inputmode="numeric" autocomplete="off">
+
+      <button class="submit-btn" id="submit">Reinigung bestätigen</button>
+      <button class="logout-btn" id="clearPin">Abmelden / PIN löschen</button>
+
+      <div class="status" id="status"></div>
+    </div>
+
+    <!-- Protokoll -->
+    <div class="card">
+      <div class="card-step">Protokoll</div>
+      <h2>Heutiges Protokoll</h2>
+
+      <div class="table-container">
+        <table>
+          <thead>
+            <tr>
+              <th>Datum</th>
+              <th>Uhrzeit</th>
+              <th>Aufgabe</th>
+              <th>Mitarbeiter</th>
+            </tr>
+          </thead>
+          <tbody id="log-body"></tbody>
+        </table>
+      </div>
+    </div>
+
+  </div>
+
+  <script>
+    // Google später: Webhook ist drin. Wenn du später komplett deaktivieren willst: const WEBHOOK_URL = "";
+    const WEBHOOK_URL = "https://script.google.com/macros/s/AKfycbzBDWoyJhc8j-Hgir29wyUPYhyCdPA4pssCLTIt-TbLobKb_KBg7E6xx-ReTrlGwM4D/exec";
+
+    let selectedTask = null;
+    let selectedStaff = null;
+
+    const pinEl = document.getElementById("pin");
+    const statusEl = document.getElementById("status");
+    const logBody = document.getElementById("log-body");
+
+    function setStatus(msg, isError){
+      statusEl.textContent = msg;
+      statusEl.className = "status " + (isError ? "error" : "ok");
+    }
+
+    function clearSelections(){
+      selectedTask = null;
+      selectedStaff = null;
+      document.querySelectorAll(".task").forEach(b => b.classList.remove("selected"));
+      document.querySelectorAll(".staff").forEach(b => b.classList.remove("selected"));
+    }
+
+    function addRow(entry){
+      const tr = document.createElement("tr");
+      tr.innerHTML = `
+        <td>${entry.date}</td>
+        <td>${entry.time}</td>
+        <td>${entry.task}</td>
+        <td>${entry.staff}</td>
+      `;
+      if (logBody.firstChild) logBody.insertBefore(tr, logBody.firstChild);
+      else logBody.appendChild(tr);
+
+      while (logBody.rows.length > 30) {
+        logBody.deleteRow(logBody.rows.length - 1);
+      }
+    }
+
+    // Aufgaben auswählen
+    document.querySelectorAll(".task").forEach(btn => {
+      btn.addEventListener("click", () => {
+        document.querySelectorAll(".task").forEach(b => b.classList.remove("selected"));
+        btn.classList.add("selected");
+        selectedTask = btn.innerText;
+      });
+    });
+
+    // Mitarbeiter auswählen
+    document.querySelectorAll(".staff").forEach(btn => {
+      btn.addEventListener("click", () => {
+        document.querySelectorAll(".staff").forEach(b => b.classList.remove("selected"));
+        btn.classList.add("selected");
+        selectedStaff = btn.innerText;
+        pinEl.focus();
+      });
+    });
+
+    // Bestätigen
+    document.getElementById("submit").addEventListener("click", () => {
+      const pin = pinEl.value.trim();
+
+      if (!selectedTask || !selectedStaff) {
+        setStatus("Bitte zuerst Aufgabe und Mitarbeiter auswählen.", true);
+        return;
+      }
+      if (!pin) {
+        setStatus("Bitte PIN eingeben.", true);
+        pinEl.focus();
+        return;
+      }
+
+      const now = new Date();
+      const entry = {
+        task: selectedTask,
+        staff: selectedStaff,
+        pin: pin,
+        date: now.toLocaleDateString("de-DE"),
+        time: now.toLocaleTimeString("de-DE"),
+        timestamp_iso: now.toISOString()
+      };
+
+      addRow(entry);
+      setStatus("Eintrag gespeichert.", false);
+
+      // Google später (wir lassen das drin – wenn es fehlschlägt, stört es heute nicht)
+      if (WEBHOOK_URL) {
+        fetch(WEBHOOK_URL, {
+          method: "POST",
+          headers: { "Content-Type": "application/json;charset=UTF-8" },
+          body: JSON.stringify({
+            date: entry.date,
+            time: entry.time,
+            task_label: entry.task,
+            person_label: entry.staff,
+            pin: entry.pin,
+            timestamp_iso: entry.timestamp_iso
+          })
+        }).catch(() => {});
+      }
+
+      // PIN bleibt aktiv
+      pinEl.focus();
+    });
+
+    // Abmelden / PIN löschen
+    document.getElementById("clearPin").addEventListener("click", () => {
+      pinEl.value = "";
+      clearSelections();
+      setStatus("Abgemeldet. PIN wurde gelöscht.", false);
+      pinEl.focus();
+    });
+
+    // Start-Fokus
+    pinEl.focus();
+  </script>
+
+</body>
+</html>
