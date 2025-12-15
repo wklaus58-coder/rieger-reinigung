@@ -433,4 +433,148 @@
   </script>
 
 </body>
+  <!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<title>Rieger´s Gourmet Restaurant – Reinigungsplan</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<link rel="manifest" href="manifest.json">
+<meta name="apple-mobile-web-app-capable" content="yes">
+
+<style>
+body{
+  font-family: system-ui, sans-serif;
+  margin:0;
+  background:#fff;
+  color:#000;
+}
+.container{max-width:900px;margin:auto;padding:16px}
+.card{
+  border:1px solid #ddd;
+  border-radius:12px;
+  padding:16px;
+  margin-bottom:16px;
+}
+h2{margin-top:0}
+.button-grid{
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(180px,1fr));
+  gap:10px;
+}
+.btn{
+  padding:12px;
+  border:1px solid #aaa;
+  border-radius:10px;
+  text-align:center;
+  cursor:pointer;
+  font-weight:700;
+}
+.btn.selected{background:#c7d2fe}
+.submit{background:#16a34a;color:#fff;border:none;padding:14px;border-radius:12px;font-size:1rem}
+.logout{background:#dc2626;color:#fff;border:none;padding:14px;border-radius:12px;margin-top:10px}
+input{
+  width:100%;
+  padding:12px;
+  border-radius:10px;
+  border:1px solid #aaa;
+  margin-bottom:10px;
+}
+.status{margin-top:10px;font-weight:700}
+</style>
+</head>
+
+<body>
+<div class="container">
+
+<div class="card">
+<h2>Aufgabe</h2>
+<div class="button-grid">
+  <div class="btn task">Theke reinigen</div>
+  <div class="btn task">Kaffeemaschine reinigen</div>
+  <div class="btn task">Getränkeautomat reinigen</div>
+</div>
+</div>
+
+<div class="card">
+<h2>Mitarbeiter</h2>
+<div class="button-grid">
+  <div class="btn staff" data-pin="4827">Tatiana Harpeng</div>
+  <div class="btn staff" data-pin="6194">Thomas Kopp</div>
+  <div class="btn staff" data-pin="7352">Gina Marie Naß</div>
+  <div class="btn staff" data-pin="8046">Olga Sirghi</div>
+  <div class="btn staff" data-pin="2918">Daiva Stariene</div>
+</div>
+</div>
+
+<div class="card">
+<h2>Bestätigen</h2>
+
+<p style="font-size:0.85rem">
+Mit dem Klick bestätigst du, dass du die Arbeit selbst durchgeführt hast
+und dein PIN dir persönlich zugeordnet ist.
+</p>
+
+<input id="pin" placeholder="PIN eingeben" inputmode="numeric">
+
+<button class="submit" id="submit">Reinigung bestätigen</button>
+<button class="logout" id="logout">Abmelden / PIN löschen</button>
+
+<div class="status" id="status"></div>
+</div>
+
+</div>
+
+<script>
+let selectedTask=null;
+let selectedStaff=null;
+let selectedPin=null;
+
+const pinEl=document.getElementById("pin");
+const statusEl=document.getElementById("status");
+
+document.querySelectorAll(".task").forEach(b=>{
+  b.onclick=()=>{
+    document.querySelectorAll(".task").forEach(x=>x.classList.remove("selected"));
+    b.classList.add("selected");
+    selectedTask=b.innerText;
+  };
+});
+
+document.querySelectorAll(".staff").forEach(b=>{
+  b.onclick=()=>{
+    document.querySelectorAll(".staff").forEach(x=>x.classList.remove("selected"));
+    b.classList.add("selected");
+    selectedStaff=b.innerText;
+    selectedPin=b.dataset.pin;
+    pinEl.focus();
+  };
+});
+
+document.getElementById("submit").onclick=()=>{
+  if(!selectedTask||!selectedStaff){
+    statusEl.textContent="Bitte Aufgabe und Mitarbeiter wählen.";
+    return;
+  }
+  if(pinEl.value!==selectedPin){
+    statusEl.textContent="PIN falsch – Zugriff verweigert.";
+    return;
+  }
+  statusEl.textContent="Eintrag gespeichert ✔️";
+};
+
+document.getElementById("logout").onclick=()=>{
+  pinEl.value="";
+  selectedTask=null;
+  selectedStaff=null;
+  selectedPin=null;
+  document.querySelectorAll(".btn").forEach(x=>x.classList.remove("selected"));
+  statusEl.textContent="Abgemeldet.";
+};
+</script>
+</body>
 </html>
+
+</html>
+
