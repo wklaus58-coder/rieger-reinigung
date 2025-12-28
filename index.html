@@ -1,21 +1,14 @@
 <!DOCTYPE html>
 <html lang="de">
 <head>
-  <link rel="manifest" href="manifest.json">
-  <meta name="apple-mobile-web-app-capable" content="yes">
-  <meta name="apple-mobile-web-app-status-bar-style" content="default">
-  <meta name="apple-mobile-web-app-title" content="Rieger Reinigung">
-<link rel="apple-touch-icon" href="Icon.png">
-<meta charset="UTF-8" />
+  <meta charset="UTF-8" />
   <title>Rieger´s Gourmet Restaurant – Reinigungsplan</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <!-- Manifest für Android/iPhone-Icon -->
   <link rel="manifest" href="manifest.json">
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="default">
-
-  <!-- PWA / Icon -->
-  <link rel="manifest" href="manifest.json">
-  <meta name="theme-color" content="#ffffff">
 
   <style>
     * { box-sizing: border-box; }
@@ -141,7 +134,7 @@
       width:100%;
       padding:12px;
       border-radius:10px;
-      border:1px solid #cfcfcf;
+      border:1px solid:#cfcfcf;
       margin-bottom:12px;
       font-size:1rem;
       outline:none;
@@ -306,10 +299,10 @@
   </div>
 
   <script>
-    // Google später: Wenn du es komplett deaktivieren willst, setze WEBHOOK_URL = ""
+    // 👉 HIER deine eigene /exec-URL eintragen:
     const WEBHOOK_URL = "https://script.google.com/macros/s/AKfycbwFNz9OWWYygatkSaic-tyiMdsBrgbDi24gnOh1scNclTnwoxizhhGH5VJnditz1HF0/exec";
 
-    // ✅ FESTE PINs pro Mitarbeiter (HIER ändern)
+    // Feste PINs pro Mitarbeiter (müssen zum Namen passen!)
     const STAFF_PINS = {
       "Tatiana Harpeng": "4827",
       "Thomas Kopp": "6194",
@@ -386,7 +379,7 @@
         return;
       }
 
-      // ✅ PIN prüfen: Name + PIN müssen zusammenpassen
+      // PIN prüfen (Name + PIN müssen zusammenpassen)
       const expectedPin = STAFF_PINS[selectedStaff];
       if (!expectedPin) {
         setStatus("Für diesen Mitarbeiter ist noch keine PIN hinterlegt.", true);
@@ -407,24 +400,29 @@
         timestamp_iso: now.toISOString()
       };
 
+      // Lokal anzeigen
       addRow(entry);
       setStatus("Eintrag gespeichert.", false);
 
-      // --- Google Sheet senden ---
-   if (WEBHOOK_URL) {
-   fetch(WEBHOOK_URL, {
-    method: "POST",
-    headers: { "Content-Type": "application/json;charset=UTF-8" },
-    body: JSON.stringify({
-      date: entry.date,
-      time: entry.time,
-      task_label: entry.task,
-      person_label: entry.staff,
-      timestamp_iso: entry.timestamp_iso
-    })
-  }).catch(() => {});
-}
-      // PIN bleibt aktiv für schnelle Mehrfach-Bestätigungen
+      // An Google schicken
+      if (WEBHOOK_URL) {
+        try {
+          fetch(WEBHOOK_URL, {
+            method: "POST",
+            body: JSON.stringify({
+              date: entry.date,
+              time: entry.time,
+              task_label: entry.task,
+              person_label: entry.staff,
+              timestamp_iso: entry.timestamp_iso
+            })
+          }).catch(() => {});
+        } catch (e) {
+          // Wenn was schiefgeht, ist nur die Verbindung betroffen, nicht die App
+        }
+      }
+
+      // PIN bleibt aktiv für weitere Aufgaben
       pinEl.focus();
     });
 
@@ -438,21 +436,7 @@
 
     // Start-Fokus
     pinEl.focus();
-    
-      window.addEventListener("load", () => window.scrollTo(0, 0));
   </script>
-
-
 
 </body>
 </html>
-
-
-
-
-
-
-
-
-
-
