@@ -424,21 +424,6 @@
     })
   }).catch(() => {});
 }
-// Google später (optional) – PIN schicken wir NICHT mit
-      if (WEBHOOK_URL) {
-        fetch(WEBHOOK_URL, {
-          method: "POST",
-          headers: { "Content-Type": "application/json;charset=UTF-8" },
-          body: JSON.stringify({
-            date: entry.date,
-            time: entry.time,
-            task_label: entry.task,
-            person_label: entry.staff,
-            timestamp_iso: entry.timestamp_iso
-          })
-        }).catch(() => {});
-      }
-
       // PIN bleibt aktiv für schnelle Mehrfach-Bestätigungen
       pinEl.focus();
     });
@@ -461,6 +446,7 @@
 
 </body>
 </html>
+
 
 
 
