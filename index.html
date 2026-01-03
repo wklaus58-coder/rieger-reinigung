@@ -300,9 +300,9 @@
 
   <script>
     // 👉 HIER deine eigene /exec-URL eintragen:
-    const WEBHOOK_URL = "https://script.google.com/macros/s/AKfycbwFNz9OWWYygatkSaic-tyiMdsBrgbDi24gnOh1scNclTnwoxizhhGH5VJnditz1HF0/exec";
+    const WEBHOOK_URL = "https://script.google.com/macros/s/AKfycbwIj9Ktj2uEuyBNnkgZQevdAsdLyv45mrMRcoE89UVlS8WIgSEsxTsHSKltpxk2sJ6r/exec";
 
-    // Feste PINs pro Mitarbeiter (müssen zum Namen passen!)
+    // Feste PINs pro Mitarbeiter (Name -> PIN)
     const STAFF_PINS = {
       "Tatiana Harpeng": "4827",
       "Thomas Kopp": "6194",
@@ -314,13 +314,13 @@
     let selectedTask = null;
     let selectedStaff = null;
 
-    const pinEl = document.getElementById("pin");
+    const pinEl    = document.getElementById("pin");
     const statusEl = document.getElementById("status");
-    const logBody = document.getElementById("log-body");
+    const logBody  = document.getElementById("log-body");
 
     function setStatus(msg, isError){
       statusEl.textContent = msg;
-      statusEl.className = "status " + (isError ? "error" : "ok");
+      statusEl.className   = "status " + (isError ? "error" : "ok");
     }
 
     function clearSelections(){
@@ -338,9 +338,13 @@
         <td>${entry.task}</td>
         <td>${entry.staff}</td>
       `;
-      if (logBody.firstChild) logBody.insertBefore(tr, logBody.firstChild);
-      else logBody.appendChild(tr);
+      if (logBody.firstChild) {
+        logBody.insertBefore(tr, logBody.firstChild);
+      } else {
+        logBody.appendChild(tr);
+      }
 
+      // nur die letzten 30 Einträge anzeigen
       while (logBody.rows.length > 30) {
         logBody.deleteRow(logBody.rows.length - 1);
       }
@@ -365,7 +369,7 @@
       });
     });
 
-    // Bestätigen
+    // Reinigung bestätigen
     document.getElementById("submit").addEventListener("click", () => {
       const pin = pinEl.value.trim();
 
@@ -379,7 +383,7 @@
         return;
       }
 
-      // PIN prüfen (Name + PIN müssen zusammenpassen)
+      // PIN prüfen
       const expectedPin = STAFF_PINS[selectedStaff];
       if (!expectedPin) {
         setStatus("Für diesen Mitarbeiter ist noch keine PIN hinterlegt.", true);
@@ -393,10 +397,11 @@
 
       const now = new Date();
       const entry = {
-        task: selectedTask,
+        task:  selectedTask,
         staff: selectedStaff,
-        date: now.toLocaleDateString("de-DE"),
-        time: now.toLocaleTimeString("de-DE"),
+        date:  now.toLocaleDateString("de-DE"),
+        time:  now.toLocaleTimeString("de-DE"),
+        pin:   pin,
         timestamp_iso: now.toISOString()
       };
 
@@ -409,11 +414,13 @@
         try {
           fetch(WEBHOOK_URL, {
             method: "POST",
+            headers: { "Content-Type": "application/json" },
             body: JSON.stringify({
-              date: entry.date,
-              time: entry.time,
-              task_label: entry.task,
+              date:         entry.date,
+              time:         entry.time,
+              task_label:   entry.task,
               person_label: entry.staff,
+              pin:          entry.pin,
               timestamp_iso: entry.timestamp_iso
             })
           }).catch(() => {});
@@ -440,4 +447,3 @@
 
 </body>
 </html>
-
