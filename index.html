@@ -448,6 +448,23 @@
 
 </body>
 </html>
+<script>
+  if ("scrollRestoration" in history) {
+    history.scrollRestoration = "manual";
+  }
+
+  function scrollTopHard() {
+    window.scrollTo({ top: 0, left: 0, behavior: "auto" });
+    document.documentElement.scrollTop = 0;
+    document.body.scrollTop = 0;
+  }
+
+  window.addEventListener("load", () => {
+    scrollTopHard();
+    setTimeout(scrollTopHard, 50);
+    setTimeout(scrollTopHard, 250);
+  });
+</script>
 
 
 
